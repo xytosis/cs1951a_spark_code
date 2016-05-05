@@ -6,7 +6,7 @@ import scala.io.Source
 
 object SolrApp {
   def main(args: Array[String]) {
-    val response = Source.fromURL("http://52.207.213.209:8983/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
+    val response = Source.fromURL("http://54.173.242.173/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
     val conf = new SparkConf().setAppName("Solr Application")
     val sc = new SparkContext(conf)
     val lines = response.split("\n")

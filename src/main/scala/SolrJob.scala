@@ -1,0 +1,34 @@
+import org.apache.spark.{SparkConf, SparkContext}
+import spark.jobserver.{SparkJob, SparkJobValid, SparkJobValidation}
+import com.typesafe.config.{Config, ConfigFactory}
+
+import scala.io.Source
+
+/**
+  * Created by Anthony on 5/5/2016.
+  */
+object SampleJob  extends SparkJob {
+  def main(args: Array[String]) {
+    val response = Source.fromURL("http://54.173.242.173/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
+    val conf = new SparkConf().setMaster("local[4]").setAppName("Solr Application")
+    val sc = new SparkContext(conf)
+    val config = ConfigFactory.parseString("")
+    runJob(sc, config)
+  }
+
+  override def runJob(sc:SparkContext, jobConfig: Config): Any = {
+    val response = Source.fromURL("http://54.173.242.173/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
+    val lines = response.split("\n")
+    val logData = sc.parallelize(lines)
+    val counts = logData.flatMap(line => line.split(" "))
+      .map(word => (word, 1))
+      .reduceByKey(_ + _)
+      .collect()
+    counts.foreach{
+      word =>
+        println("word: " + word._1 + ", " + "count: " + word._2)
+    }
+  }
+
+  override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
+}
