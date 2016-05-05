@@ -7,9 +7,8 @@ import scala.io.Source
 /**
   * Created by Anthony on 5/5/2016.
   */
-object SampleJob  extends SparkJob {
+object SolrJob extends SparkJob {
   def main(args: Array[String]) {
-    val response = Source.fromURL("http://54.173.242.173/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
     val conf = new SparkConf().setMaster("local[4]").setAppName("Solr Application")
     val sc = new SparkContext(conf)
     val config = ConfigFactory.parseString("")
@@ -17,7 +16,7 @@ object SampleJob  extends SparkJob {
   }
 
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val response = Source.fromURL("http://54.173.242.173/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
+    val response = Source.fromURL("http://54.173.242.173:8983/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
     val lines = response.split("\n")
     val logData = sc.parallelize(lines)
     val counts = logData.flatMap(line => line.split(" "))
