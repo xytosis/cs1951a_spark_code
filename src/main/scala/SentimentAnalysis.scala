@@ -42,7 +42,7 @@ object SentimentAnalysisApp {
       .toList
 
 println(moo.get(0))
-    println(moo.toString())
+    moo.foreach(println)
 
     // if (mainSentiment == 2 || mainSentiment > 4 || mainSentiment < 0) {
     //     return null;
