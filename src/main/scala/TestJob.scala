@@ -19,7 +19,7 @@ object TestJob extends SparkJob {
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
     val jsonResponse = Http("http://54.173.242.173:8983/solr/comments/select")
       .param("q","body:stupid")
-      .param("rows","1")
+      .param("rows","10")
       .param("fl","body")
       .param("wt","json")
       .asString.body
@@ -27,12 +27,9 @@ object TestJob extends SparkJob {
     val logData = sc.parallelize(comments)
     logData.flatMap(line => line.split(" ")).countByValue
   }
-  
+
   def getComments(json: String): Array[String] = {
     val jvalue = parse(json) \ "response" \ "docs"
-    val comments = jvalue.extract[Array[Body]]
-    comments.map(b => b.body)
+    jvalue.extract[Array[String]]
   }
-
-  case class Body(body: String)
 }
