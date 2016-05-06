@@ -26,12 +26,11 @@ object SentimentAnalyzerJob extends SparkJob {
   override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
 
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val pipeline = initPipeline()
     val comments = getComments()
     val logData = sc.parallelize(comments)
     logData
       .flatMap(line => line.body.split("."))
-      .map(sentence => analyzeComment(sentence, pipeline))
+      .map(sentence => analyzeComment(sentence))
       .mean()
   }
 
@@ -55,7 +54,8 @@ object SentimentAnalyzerJob extends SparkJob {
     jvalue.extract[List[Body]]
   }
 
-  def analyzeComment(comment: String, pipeline: StanfordCoreNLP): Double = {
+  def analyzeComment(comment: String): Double = {
+    val pipeline = initPipeline()
     var sumSentiment: Double = 0
 
     val annotation : Annotation = pipeline.process(comment)
