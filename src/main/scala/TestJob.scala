@@ -13,7 +13,12 @@ object TestJob extends SparkJob {
   }
 
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val response = Http("http://54.173.242.173:8983/solr/comments/select?q=body%3Astupid&rows=1&fl=body").asString.body
+    val response = Http("http://54.173.242.173:8983/solr/comments/select")
+      .param("q","body:stupid")
+      .param("rows","1")
+      .param("fl","body")
+      .param("wt","json")
+      .asString.body
     val lines = response.split("\n")
     val logData = sc.parallelize(lines)
     logData.flatMap(line => line.split(" ")).countByValue
