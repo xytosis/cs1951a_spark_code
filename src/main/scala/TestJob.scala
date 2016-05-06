@@ -28,10 +28,9 @@ object TestJob extends SparkJob {
     logData.flatMap(line => line.split(" ")).countByValue
   }
 
-  def getComments(json: String): Array[String] = {
-    case class Body(body: String)
+  def getComments(json: String): List[String] = {
     implicit val formats = DefaultFormats
     val jvalue = parse(json) \ "response" \ "docs"
-    jvalue.extract[Array[Body]].map(b => b.body)
+    jvalue.extract[List[String]]
   }
 }
