@@ -18,7 +18,7 @@ import scala.io.Source
 
 object SentimentAnalysisApp {
   def analyzeComment(comment : String, pipeline :StanfordCoreNLP): Double = {
-    var sumSentiment = 0.0;
+    var sumSentiment : Double = 0.0;
 
     val annotation : Annotation = pipeline.process(comment)
     val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
@@ -42,7 +42,7 @@ object SentimentAnalysisApp {
 
     val comments : Array[String] = Array("Obama's policies are quite strange.", "I am so happy Obama is my president")
 
-    var sum = 0.0
+    var sum : Double = 0.0
 
     for (comment <- comments){
       sum += analyzeComment(comment, pipeline)
