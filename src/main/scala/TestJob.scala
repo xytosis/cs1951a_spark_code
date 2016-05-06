@@ -3,6 +3,8 @@ import spark.jobserver.{SparkJob, SparkJobValid, SparkJobValidation}
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scalaj.http.Http
+import org.json4s._
+import org.json4s.native.JsonMethods._
 
 object TestJob extends SparkJob {
   def main(args: Array[String]) {
@@ -12,17 +14,25 @@ object TestJob extends SparkJob {
     runJob(sc, config)
   }
 
+  override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
+
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val response = Http("http://54.173.242.173:8983/solr/comments/select")
+    val jsonResponse = Http("http://54.173.242.173:8983/solr/comments/select")
       .param("q","body:stupid")
       .param("rows","1")
       .param("fl","body")
       .param("wt","json")
       .asString.body
-    val lines = response.split("\n")
-    val logData = sc.parallelize(lines)
+    val comments = getComments(jsonResponse)
+    val logData = sc.parallelize(comments)
     logData.flatMap(line => line.split(" ")).countByValue
   }
+  
+  def getComments(json: String): Array[String] = {
+    val jvalue = parse(json) \ "response" \ "docs"
+    val comments = jvalue.extract[Array[Body]]
+    comments.map(b => b.body)
+  }
 
-  override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
+  case class Body(body: String)
 }

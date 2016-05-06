@@ -16,6 +16,7 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
 }
 
 libraryDependencies ++= Seq(
-  "org.scalaj" %% "scalaj-http" % "2.3.0",
   "org.apache.spark" %% "spark-core" % "1.6.0" % "provided",
-  "spark.jobserver" %% "job-server-api" % "0.6.2" % "provided")
+  "spark.jobserver" %% "job-server-api" % "0.6.2" % "provided",
+  "org.scalaj" %% "scalaj-http" % "2.3.0",
+  "org.json4s" %% "json4s-native" % "3.3.0")
