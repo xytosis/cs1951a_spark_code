@@ -36,10 +36,9 @@ object SentimentAnalysisApp {
     val annotation : Annotation = pipeline.process(line);
         val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
 
-
     val moo = sentences
-      .map(sentence => (sentence, sentence.get(classOf[SentimentCoreAnnotations.AnnotatedTree])))
-      .map { case (tree) => (sentence.toString,RNNCoreAnnotations.getPredictedClass(tree)) }
+      .map(sentence => (sentence.get(classOf[SentimentCoreAnnotations.AnnotatedTree])))
+      .map { case (tree) => (RNNCoreAnnotations.getPredictedClass(tree)) }
       .toList
 
 println(moo)
