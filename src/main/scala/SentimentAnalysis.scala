@@ -13,12 +13,23 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
 import edu.stanford.nlp._
 
 import scala.collection.convert.wrapAll._
-import org.json4s._
-import org.json4s.native.JsonMethods._
 
 import scala.io.Source
 
 object SentimentAnalysisApp {
+  def analyzeComment(comment : String, pipeline :StanfordCoreNLP): Double = {
+    var sumSentiment = 0.0;
+
+    val annotation : Annotation = pipeline.process(comment)
+    val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
+    val moo = sentences
+      .map(sentence => sentence.get(classOf[SentimentCoreAnnotations.AnnotatedTree]))
+      .map { case (tree) => RNNCoreAnnotations.getPredictedClass(tree) }
+      .toList
+
+    moo.foreach(sumSentiment += _)
+    return sumSentiment/moo.length
+  }
   def main(args: Array[String]) {
     val word = "obama"
     val url_stem = "http://54.173.242.173:8983/solr/comments/select?q=body%3A";
@@ -51,18 +62,5 @@ object SentimentAnalysisApp {
     //   word =>
     //     println("word: " + word._1 + ", " + "count: " + word._2)
     // }
-  }
-  def analyzeComment(comment : String, pipeline :StanfordCoreNLP): Double = {
-    var sumSentiment = 0.0;
-
-    val annotation : Annotation = pipeline.process(comment)
-    val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
-    val moo = sentences
-      .map(sentence => sentence.get(classOf[SentimentCoreAnnotations.AnnotatedTree]))
-      .map { case (tree) => RNNCoreAnnotations.getPredictedClass(tree) }
-      .toList
-
-    moo.foreach(sumSentiment += _)
-    return sumSentiment/moo.length
   }
 }
