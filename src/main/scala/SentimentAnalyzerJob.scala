@@ -13,6 +13,8 @@ import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
 
+import scala.collection.convert.wrapAll._
+
 object SentimentAnalyzerJob extends SparkJob {
   def main(args: Array[String]) {
     val conf = new SparkConf().setMaster("local[4]").setAppName("Sentiment Analyzer")
@@ -54,11 +56,11 @@ object SentimentAnalyzerJob extends SparkJob {
   }
 
   def analyzeComment(comment: String, pipeline: StanfordCoreNLP): Double = {
-    var sumSentiment : Double = 0.0
+    var sumSentiment: Double = 0
 
     val annotation : Annotation = pipeline.process(comment)
     val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
-    val moo = sentences.
+    val moo = sentences
       .map(sentence => sentence.get(classOf[SentimentCoreAnnotations.AnnotatedTree]))
       .map { case (tree) => RNNCoreAnnotations.getPredictedClass(tree) }
       .toList
