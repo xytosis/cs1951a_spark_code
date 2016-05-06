@@ -23,10 +23,11 @@ object SolrJob extends SparkJob {
       .map(word => (word, 1))
       .reduceByKey(_ + _)
       .collect()
-    counts.foreach{
-      word =>
-        println("word: " + word._1 + ", " + "count: " + word._2)
-    }
+    counts
+//    counts.foreach{
+//      word =>
+//        println("word: " + word._1 + ", " + "count: " + word._2)
+//    }
   }
 
   override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
