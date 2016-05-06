@@ -17,23 +17,22 @@ object TestJob extends SparkJob {
   override def validate(sc:SparkContext, config: Config): SparkJobValidation = SparkJobValid
 
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val jsonResponse = Http("http://54.173.242.173:8983/solr/comments/select")
+    val jsonString = Http("http://54.173.242.173:8983/solr/comments/select")
       .param("q","body:stupid")
       .param("rows","10")
       .param("fl","body")
       .param("wt","json")
       .asString.body
-    val comments = getComments(jsonResponse)
+    val comments = getComments(jsonString)
     val logData = sc.parallelize(comments)
     logData.flatMap(line => line.split(" ")).countByValue
   }
 
-  case class Response(numFound: Long, start: Long, docs: List[Body])
   case class Body(body: String)
   implicit val formats = DefaultFormats
 
   def getComments(json: String): List[String] = {
-    val jvalue = parse(json) \ "response"
-    jvalue.extract[Response].docs.map(b => b.body)
+    val jvalue = parse(json) \ "response" \ "docs"
+    jvalue.extract[List[Body]].map(b => b.body)
   }
 }
