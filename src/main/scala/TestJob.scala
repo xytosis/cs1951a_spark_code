@@ -30,6 +30,7 @@ object TestJob extends SparkJob {
 
   case class Response(numFound: Long, start: Long, docs: List[Body])
   case class Body(body: String)
+  implicit val formats = DefaultFormats
 
   def getComments(json: String): List[String] = {
     val jvalue = parse(json) \ "response"
