@@ -19,4 +19,6 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "1.6.0" % "provided",
   "spark.jobserver" %% "job-server-api" % "0.6.2" % "provided",
   "org.scalaj" %% "scalaj-http" % "2.3.0",
-  "org.json4s" %% "json4s-native" % "3.3.0")
+  "org.json4s" %% "json4s-native" % "3.3.0",
+  "edu.stanford.nlp" % "stanford-corenlp" % "3.4.1" artifacts (Artifact("stanford-corenlp", "models"), Artifact("stanford-corenlp"))
+)
