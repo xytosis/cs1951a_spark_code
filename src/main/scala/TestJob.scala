@@ -25,14 +25,14 @@ object TestJob extends SparkJob {
       .asString.body
     val comments = getComments(jsonString)
     val logData = sc.parallelize(comments)
-    logData.flatMap(line => line.split(" ")).countByValue
+    logData.flatMap(line => line.body.split(" ")).countByValue
   }
 
   case class Body(body: String)
   implicit val formats = DefaultFormats
 
-  def getComments(json: String): List[String] = {
+  def getComments(json: String): List[Body] = {
     val jvalue = parse(json) \ "response" \ "docs"
-    jvalue.extract[List[Body]].map(b => b.body)
+    jvalue.extract[List[Body]]
   }
 }
