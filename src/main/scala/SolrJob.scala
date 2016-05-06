@@ -16,7 +16,7 @@ object SolrJob extends SparkJob {
   }
 
   override def runJob(sc:SparkContext, jobConfig: Config): Any = {
-    val response = Source.fromURL("http://54.173.242.173:8983/solr/comments/select?q=body%3Astupid&rows=1&fl=body").mkString
+    val response = Source.fromURL("http://54.173.242.173:8983/solr/comments/select?q=body%3Astupid&rows=1&fl=body&wt=json").mkString
     val lines = response.split("\n")
     val logData = sc.parallelize(lines)
     logData.flatMap(line => line.split(" ")).countByValue
