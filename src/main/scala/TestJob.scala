@@ -29,6 +29,7 @@ object TestJob extends SparkJob {
   }
 
   def getComments(json: String): Array[String] = {
+    implicit val formats = DefaultFormats
     val jvalue = parse(json) \ "response" \ "docs"
     jvalue.extract[Array[String]]
   }
