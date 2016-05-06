@@ -48,6 +48,7 @@ object SentimentAnalysisApp {
       sum += analyzeComment(comment, pipeline)
     }
 
+    println("sum : " + sum)
     println(sum/comments.length)
 
     // val conf = new SparkConf().setAppName("Test Application")
