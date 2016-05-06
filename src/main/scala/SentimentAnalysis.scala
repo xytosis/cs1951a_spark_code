@@ -41,7 +41,8 @@ object SentimentAnalysisApp {
       .map { case (tree) => (RNNCoreAnnotations.getPredictedClass(tree)) }
       .toList
 
-println(moo)
+println(moo.get(0))
+    println(moo.toString())
 
     // if (mainSentiment == 2 || mainSentiment > 4 || mainSentiment < 0) {
     //     return null;
