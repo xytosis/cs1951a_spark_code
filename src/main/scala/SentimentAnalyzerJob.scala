@@ -52,7 +52,8 @@ object SentimentAnalyzerJob extends SparkJob {
       .param("wt","json")
       .param("fq", "votescore:[2 TO *]")
       //      .param("sort","votescore%20desc")
-      .option(HttpOptions.connTimeout(10000)).option(HttpOptions.readTimeout(50000))
+      .option(HttpOptions.connTimeout(10000))
+      .option(HttpOptions.readTimeout(50000))
       .asString.body
     val jvalue = parse(json) \ "response" \ "docs"
     jvalue.extract[List[Body]]
